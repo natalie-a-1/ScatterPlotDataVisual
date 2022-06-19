@@ -1,7 +1,7 @@
 
 var height = 900;
-var width = 450;
-var padding = 100;
+var width = 900;
+var padding = 50;
 
 
 var xAxis;
@@ -51,7 +51,8 @@ var data = d3.json('https://raw.githubusercontent.com/freeCodeCamp/ProjectRefere
 
     svgBox();
     scales();
-    // axes();
+    axes();
+    window.scrollTo(0, 0);
 });
 
 var svgBox = () => {
@@ -75,9 +76,23 @@ var scales = () => {
 
     xScale = d3.scaleLinear()
     .domain(d3.extent(dates))
-    .range([padding, width]);
+    .range([padding, width-padding]);
 
     yScale = d3.scaleLinear()
     .domain([0, d3.max(dates)])
     .range([(height - padding), padding]);
 };
+
+var axes = () => {
+    xAxis = d3.axisBottom(xScale);
+    svg.append('g')
+    .call(xAxis)
+    .attr('id', 'x-axis')
+    .attr('transform', 'translate(0,' + (height - padding) + ')');
+
+    yAxis = d3.axisLeft(yScale);
+    svg.append('g')
+    .call(yAxis)
+    .attr('id', 'y-axis')
+    .attr('transform', 'translate(' + padding + ', 0)');
+}
