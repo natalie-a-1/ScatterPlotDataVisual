@@ -22,7 +22,9 @@ var data = d3.json('https://raw.githubusercontent.com/freeCodeCamp/ProjectRefere
     })
 
     times = cases.map((item) => {
-        return (item.Time);
+        //todo: may need to be chnaged
+        temp = item.Time.split(':');
+        return new Date(0, 0, 0, 0, temp[0], temp[1]).getTime();
     })
 
     place = cases.map((item) => {
@@ -52,6 +54,7 @@ var data = d3.json('https://raw.githubusercontent.com/freeCodeCamp/ProjectRefere
     svgBox();
     scales();
     axes();
+    dots();
     window.scrollTo(0, 0);
 });
 
@@ -70,7 +73,7 @@ var scales = () => {
     .domain([0, d3.max(dates)])
     .range([0, (height - padding)]);
 
-    widthScale = d3.scaleLinear()
+    widthScale = d3.scaleTime()
     .domain([0, d3.max(times)])
     .range([padding, width]);
 
@@ -78,8 +81,8 @@ var scales = () => {
     .domain(d3.extent(dates))
     .range([padding, width-padding]);
 
-    yScale = d3.scaleLinear()
-    .domain([0, d3.max(dates)])
+    yScale = d3.scaleTime()
+    .domain([0, d3.max(times)])
     .range([(height - padding), padding]);
 };
 
@@ -95,4 +98,17 @@ var axes = () => {
     .call(yAxis)
     .attr('id', 'y-axis')
     .attr('transform', 'translate(' + padding + ', 0)');
+}
+
+var dots = () => {
+    svg.selectAll('.dot')
+    .data(cases)
+    .enter()
+    .append('circle')
+    .attr('class', 'dot')
+    .attr("data-xvalue", d => dates)
+    .attr("data-yvalue", t => times)
+    .attr('cy', t => yScale(times))
+    .attr('cx', d => xScale(dates))
+    .attr('r', 6)
 }
